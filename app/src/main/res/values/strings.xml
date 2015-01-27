@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">QuizTads</string>
+    <string name="quiz_title">Quiz TADS</string>
+    <string name="action_settings">Settings</string>
+
+
+
+
+
+    <color name="text_color">#000000</color>
+    <color name="background_color">#FFFFCC</color>
+    <color name="correct_answer">#00CC00</color>
+    <color name="incorrect_answer">#FF0000</color>
+
+    <dimen name="title_size">25sp</dimen>
+    <dimen name="flag_width">227dp</dimen>
+    <dimen name="flag_height">150dp</dimen>
+    <dimen name="answer_size">40sp</dimen>
+    <dimen name="text_size">20sp</dimen>
+
+</resources>
