@@ -22,6 +22,16 @@
         />
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Questão 1 de 5"
+        android:id="@+id/numberQuestionTextView"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="25dp" />
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -31,8 +41,44 @@
     <RadioButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="New RadioButton"
-        android:id="@+id/radioButton"
-        android:layout_marginTop="20dp"/>
+        android:text="Cristiano Ronaldo"
+        android:id="@+id/respostaRadioButton_1"
+        android:layout_marginTop="20dp"
+        android:checked="false" />
+
+    <RadioButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Neymar Júnior"
+        android:id="@+id/respostaRadioButton_2"
+        android:layout_marginTop="20dp"
+        android:checked="false" />
+
+    <RadioButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ronaldo Nazário"
+        android:id="@+id/respostaRadioButton_3"
+        android:layout_marginTop="20dp"
+        android:checked="false"
+        android:layout_gravity="center_horizontal" />
+
+    <RadioButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pelé"
+        android:id="@+id/respostaRadioButton_4"
+        android:layout_marginTop="20dp"
+        android:checked="false"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Acertou!"
+        android:id="@+id/respostaTextView"
+        android:layout_gravity="center_horizontal" />
 
 </LinearLayout>
