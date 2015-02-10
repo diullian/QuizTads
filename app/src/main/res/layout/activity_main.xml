@@ -9,7 +9,7 @@
     android:id="@+id/linearLayout"
     android:gravity="center_horizontal"
     android:orientation="vertical">
-
+    <!-- n -->
     <!-- views -->
     <TextView
         android:layout_width="match_parent"
