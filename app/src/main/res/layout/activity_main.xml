@@ -25,8 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Questão 1 de 5"
-        android:id="@+id/numberQuestionTextView"
+        android:id="@+id/numeroQuestaoTextView"
         android:layout_gravity="center"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="25dp" />
@@ -35,50 +34,55 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Qual o nome do jogador de futebol mais conhecido como Fenômeno?"
         android:id="@+id/perguntaTextView" />
 
-    <RadioButton
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Cristiano Ronaldo"
-        android:id="@+id/respostaRadioButton_1"
-        android:layout_marginTop="20dp"
-        android:checked="false" />
 
-    <RadioButton
+    <TableLayout
+        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Neymar Júnior"
-        android:id="@+id/respostaRadioButton_2"
-        android:layout_marginTop="20dp"
-        android:checked="false" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:stretchColumns="0"
+        android:id="@+id/buttonTableLayout">
 
-    <RadioButton
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Ronaldo Nazário"
-        android:id="@+id/respostaRadioButton_3"
-        android:layout_marginTop="20dp"
-        android:checked="false"
-        android:layout_gravity="center_horizontal" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/tableRow0" />
 
-    <RadioButton
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Pelé"
-        android:id="@+id/respostaRadioButton_4"
-        android:layout_marginTop="20dp"
-        android:checked="false"
-        android:layout_gravity="center_horizontal" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/tableRow1" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/tableRow2" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/tableRow3" />
+
+    </TableLayout>
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Acertou!"
         android:id="@+id/respostaTextView"
         android:layout_gravity="center_horizontal" />
+
+
+
 
 </LinearLayout>
