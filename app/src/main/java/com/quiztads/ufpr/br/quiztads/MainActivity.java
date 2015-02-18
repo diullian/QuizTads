@@ -17,50 +17,61 @@ import android.widget.TextView;
 import android.os.Handler;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Random;
+import com.quiztads.ufpr.br.quiztads.WebService;
 
 
 public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = "MainActivity";
-    private TextView txtPergunta;
+
+    /* Controle da UI */
+    private TextView perguntaTextView;
     private TextView respostaTextView;
-
-    private int totalTentiva; //Número de tentativas
-    private int totalAcerto; //Número de acertos
-
     private TextView numeroQuestaoTextView;
     private TextView txtResposta; //Para mostrar Correto ou Incorreto
-    private int intPerguntaAtual; //Numero de pergunta Atual
-    private int totalOpcaoResposta = 4;
-    private int totalMaxPergunta = 5;
-
-    private ArrayList<Pergunta> arrayPerguntas;
+    private TableLayout buttonTableLayout; //Tabela dos botões da resposta
 
     private Random random; //Gerador de número aleatório
     private Handler handler; //Usada para o delay da próxima pergunta
-    private TableLayout buttonTableLayout; //Tabela dos botões da resposta
+
+    /* controle do QUIZ */
+    private ArrayList<Pergunta> arrayPerguntas; //Array de perguntas, sendo populado do WS
+    private int tentativas; //Número de tentativas
+    private int totalAcerto; //Número de acertos
+
+    private int intPerguntaAtual; //Numero de pergunta Atual
+    private int totalOpcaoResposta = 4;
+    private int totalMaxPergunta = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        arrayPerguntas = new ArrayList<Pergunta>();
-        arrayPerguntas.clear();
-
         buttonTableLayout = (TableLayout) findViewById(R.id.buttonTableLayout);
         random = new Random();
         handler = new Handler();
+
+        /*Teste WS */
+
+
+        //String url = "http://quizws.jelastic.websolute.net.br/quizws/service/getRandomQuiz/5";
+        //WebService ws = new WebService(url);
+
+
+
+        /*Fim teste*/
 
         resetQuiz();
     }
 
 
     public void resetQuiz(){
-        totalTentiva = 0;
+
+        tentativas = 0; //Inicializa tentativas como 0
+        arrayPerguntas = new ArrayList<Pergunta>(); //Cria array de perguntas
+        arrayPerguntas.clear();
 
         ArrayList<Resposta> resp = new ArrayList<>();
         Pergunta perg1 = new Pergunta(7, "Qual o nome do cara mais viado que vc conhece?");
@@ -94,15 +105,13 @@ public class MainActivity extends ActionBarActivity {
                 }
                 listaRespostas.add(resposta);
             }
-
             objPergunta.Respostas = listaRespostas;
             arrayPerguntas.add(objPergunta);
         }
 
         intPerguntaAtual = 1; //Inicia em 1
-
         respostaTextView = (TextView) findViewById(R.id.respostaTextView);
-        txtPergunta = (TextView) findViewById(R.id.perguntaTextView);
+        perguntaTextView = (TextView) findViewById(R.id.perguntaTextView);
 
         iniciaQuiz();
     }
@@ -115,10 +124,10 @@ public class MainActivity extends ActionBarActivity {
                         getResources().getString(R.string.de) + " " + totalMaxPergunta
         );
 
-        Pergunta perguntaAtual = arrayPerguntas.get(intPerguntaAtual-1);
+        Pergunta objPergunta = arrayPerguntas.get(intPerguntaAtual-1);
         Log.e(TAG,"intPerguntaAtual == " + intPerguntaAtual);
 
-        txtPergunta.setText(perguntaAtual.Pergunta); //Adiciona na UI a pergunta dinâmica
+        perguntaTextView.setText(objPergunta.Pergunta); //Adiciona na UI a pergunta dinâmica
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         //Limpa os botões da TableRows
@@ -127,15 +136,15 @@ public class MainActivity extends ActionBarActivity {
         }
 
         //popula e infla a UI com as respostas
-        for(int row = 0; row < perguntaAtual.Respostas.size(); row++){
+        for(int row = 0; row < objPergunta.Respostas.size(); row++){
             TableRow currentTableRow = getTableRow(row);
 
                  //Infla button_resposta.xml para criar novos botões
                  Button btnNovaPergunta = (Button) inflater.inflate(R.layout.button_resposta, null);
 
                  //Nomeia botões com as respostas
-                 String strResposta = perguntaAtual.Respostas.get(row).Resposta;
-                 //btnNovaPergunta.setId(perguntaAtual.Respostas.get(row).Id); //Pode setar a ID da pergunta mesmo
+                 String strResposta = objPergunta.Respostas.get(row).Resposta;
+                 //btnNovaPergunta.setId(objPergunta.Respostas.get(row).Id); //Pode setar a ID da pergunta mesmo
                  btnNovaPergunta.setId(row);
                  btnNovaPergunta.setText(strResposta);
 
@@ -143,15 +152,6 @@ public class MainActivity extends ActionBarActivity {
                  btnNovaPergunta.setOnClickListener(respostaButtonListener);
                  currentTableRow.addView(btnNovaPergunta);
         }
-
-
-        //Randomicamente colocar a resposta correta em algum botão
-//        int row = random.nextInt(totalOpcaoResposta);
-//        int column = random.nextInt(1);
-//        TableRow randomTableRow = getTableRow(row);
-//        String objRespostaCorreta = "Resposta CORRETA";
-//        ((Button) randomTableRow.getChildAt(0)).setText(objRespostaCorreta);
-
     }
 
     //Chama quando um botao resposta é pressionado
@@ -166,10 +166,10 @@ public class MainActivity extends ActionBarActivity {
     //Chama quando usuario escolhe uma resposta
     private void selectResposta(Button respostaButton){
         //REVISAR LÓGICA, POIS O getId pega ID DA PERGUTNA, certo entao seria o INDICE!
-        totalTentiva++;
+        tentativas++;
         disableButtons(); //Desabilita outros botões de resposta
 
-        Log.e(TAG," select resposta = tentativa " + totalTentiva + " // totalMax = " + totalMaxPergunta);
+        Log.e(TAG," select resposta = tentativa " + tentativas + " // totalMax = " + totalMaxPergunta);
 
 
         Pergunta perguntaAtual = arrayPerguntas.get(intPerguntaAtual - 1);
@@ -189,7 +189,7 @@ public class MainActivity extends ActionBarActivity {
         }
 
 
-        if(totalTentiva >= totalMaxPergunta){
+        if(tentativas >= totalMaxPergunta){
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Finish!");
@@ -227,7 +227,7 @@ public class MainActivity extends ActionBarActivity {
     public void carregaProximaPergunta(){
 
         //Limpa a pergunta
-        txtPergunta.setText("");
+        perguntaTextView.setText("");
 
         //Limpa resposta(acertou ou errou)
         respostaTextView.setText("");
