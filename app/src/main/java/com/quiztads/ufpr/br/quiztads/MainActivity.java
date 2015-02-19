@@ -17,11 +17,15 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +35,7 @@ import java.util.Map;
 import java.util.Random;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends ActionBarActivity {
@@ -68,18 +73,61 @@ public class MainActivity extends ActionBarActivity {
 
         /*Teste WS */
 
+
+
+
+
         new Thread(){
 
             public void run(){
+
+                ArrayList<Resposta> resp = new ArrayList<>();
+                Pergunta perg1 = new Pergunta(7, "BLABLABALBA BLEBLE?");
+                resp.add(new Resposta(4,"Robson robinho", false));
+                resp.add(new Resposta(7,"Ricardão borracheiro", false));
+                resp.add(new Resposta(9,"João Tripé", false));
+                resp.add(new Resposta(24,"Alvaro alvinho", true));
+                perg1.respostas = resp;
+
+                ArrayList<Resposta> resp2 = new ArrayList<>();
+                Pergunta perg2 = new Pergunta(9, "Segunda pergunta mano");
+                resp2.add(new Resposta(4,"Foca", false));
+                resp2.add(new Resposta(7,"Ricici", false));
+                resp2.add(new Resposta(9,"Bobão", false));
+                resp2.add(new Resposta(24,"Teste", true));
+                perg2.respostas = resp2;
+
+                List<Pergunta> aux = new ArrayList<>();
+                aux.add(perg1);
+                aux.add(perg2);
+
+                Gson gson = new Gson();
+                String teste =  gson.toJson(aux);
+
                 String url = "http://quizws.jelastic.websolute.net.br/quizws/service/getRandomQuiz/5";
                 WebService ws = new WebService(url);
                 Map params = new HashMap();
                 String response = ws.webGet("",params);
+               // HttpResponse response = ws.response;
+
+                InputStream inputStream = null;
+                String result = null;
 
                 try{
 
                     //JSONArray arrayJson = new JSONArray(response);
-                    JSONObject arrayJson = new JSONObject(response);
+                    //JSONObject arrayJson = new JSONObject(teste);
+                    JSONArray ja = new JSONArray(teste);
+
+                    for(int i =0; i < ja.length(); i++){
+                        try{
+                            JSONObject obj1 = ja.getJSONObject(i);
+
+                            Log.e(TAG,"OBJETO " + i + " = " + obj1.getString("pergunta"));
+                        }catch(JSONException ex){
+                            Log.e(TAG,"JSON PAU ! " + ex);
+                        }
+                    }
 
                     //String obj = arrayJson.getString("pergunta").toString();
                     //funfou tb
@@ -102,9 +150,26 @@ public class MainActivity extends ActionBarActivity {
 //                        arrayPerguntas.add(x);
 //                    }
 
+                    //HttpEntity entity = response.getEntity();
+                    //result = new String(EntityUtils.toString(entity));
+
+                    //inputStream = entity.getContent();
+/*
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
+                    StringBuilder sb = new StringBuilder();
+
+                    String line = null;
+                    while ((line = reader.readLine()) != null)
+                    {
+                        sb.append(line + "\n");
+                    }
+                    result = sb.toString();
+*/
+                    Log.e(TAG,"RESULTADO *** 13 **** = ");
+
                 }catch(Exception ex){
-                    Log.e(TAG," GOOGLE JSON[2]", ex);
-                    ex.printStackTrace();
+                    Log.e(TAG," GOOGLE JSON [** 19 ***]", ex);
+                   // ex.printStackTrace();
                 }
 
             }
