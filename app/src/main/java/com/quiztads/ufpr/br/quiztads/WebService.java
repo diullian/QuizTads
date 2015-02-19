@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by DIULLIAN on 14/02/2015.
+ * Created by ALVARO, DIEGO E DIULLIAN
  */
 public class WebService {
 
@@ -120,23 +120,23 @@ public class WebService {
         String getUrl = webServiceUrl + methodName;
 
         int i = 0;
-        for (Map.Entry<String, String> param : params.entrySet())
-        {
-            if(i == 0){
-                getUrl += "?";
-            }
-            else{
-                getUrl += "&";
-            }
+        if(!params.isEmpty()) {
+            for (Map.Entry<String, String> param : params.entrySet()) {
+                if (i == 0) {
+                    getUrl += "?";
+                } else {
+                    getUrl += "&";
+                }
 
-            try {
-                getUrl += param.getKey() + "=" + URLEncoder.encode(param.getValue(),"UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+                try {
+                    getUrl += param.getKey() + "=" + URLEncoder.encode(param.getValue(), "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
 
-            i++;
+                i++;
+            }
         }
 
         httpGet = new HttpGet(getUrl);

@@ -3,8 +3,9 @@ package com.quiztads.ufpr.br.quiztads;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,12 +15,23 @@ import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.os.Handler;
 
+import org.apache.http.HttpEntity;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
-import com.quiztads.ufpr.br.quiztads.WebService;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -36,7 +48,7 @@ public class MainActivity extends ActionBarActivity {
     private Handler handler; //Usada para o delay da próxima pergunta
 
     /* controle do QUIZ */
-    private ArrayList<Pergunta> arrayPerguntas; //Array de perguntas, sendo populado do WS
+    private List<Pergunta> arrayPerguntas; //Array de perguntas, sendo populado do WS
     private int tentativas; //Número de tentativas
     private int totalAcerto; //Número de acertos
 
@@ -49,15 +61,55 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        arrayPerguntas = new ArrayList<Pergunta>(); //Cria array de perguntas
         buttonTableLayout = (TableLayout) findViewById(R.id.buttonTableLayout);
         random = new Random();
         handler = new Handler();
 
         /*Teste WS */
 
+        new Thread(){
 
-        //String url = "http://quizws.jelastic.websolute.net.br/quizws/service/getRandomQuiz/5";
-        //WebService ws = new WebService(url);
+            public void run(){
+                String url = "http://quizws.jelastic.websolute.net.br/quizws/service/getRandomQuiz/5";
+                WebService ws = new WebService(url);
+                Map params = new HashMap();
+                String response = ws.webGet("",params);
+
+                try{
+
+                    //JSONArray arrayJson = new JSONArray(response);
+                    JSONObject arrayJson = new JSONObject(response);
+
+                    //String obj = arrayJson.getString("pergunta").toString();
+                    //funfou tb
+//                    JSONArray json = new JSONArray(response);
+//                    JSONObject arrays = json.optJSONObject(0);
+//                    Log.e(TAG, "array PAU [2] = " + arrays);
+
+
+                    //Teste google
+                    //GsonBuilder gsonBuilder = new GsonBuilder();
+//                    Gson gson = gsonBuilder.create();
+//
+//                    List<Pergunta> perguntas = new ArrayList<Pergunta>();
+//                    perguntas = Arrays.asList(gson.fromJson(response, Pergunta[].class));
+//
+//                    Type type = new TypeToken<List<Pergunta>>(){}.getType();
+//                    List<Pergunta> inpList = new Gson().fromJson(obj,type);
+//                    for (int i=0;i<inpList.size();i++) {
+//                        Pergunta x = inpList.get(i);
+//                        arrayPerguntas.add(x);
+//                    }
+
+                }catch(Exception ex){
+                    Log.e(TAG," GOOGLE JSON[2]", ex);
+                    ex.printStackTrace();
+                }
+
+            }
+        }.start();
+
 
 
 
@@ -70,8 +122,8 @@ public class MainActivity extends ActionBarActivity {
     public void resetQuiz(){
 
         tentativas = 0; //Inicializa tentativas como 0
-        arrayPerguntas = new ArrayList<Pergunta>(); //Cria array de perguntas
-        arrayPerguntas.clear();
+
+        //arrayPerguntas.clear();
 
         ArrayList<Resposta> resp = new ArrayList<>();
         Pergunta perg1 = new Pergunta(7, "Qual o nome do cara mais viado que vc conhece?");
@@ -79,35 +131,35 @@ public class MainActivity extends ActionBarActivity {
         resp.add(new Resposta(7,"Ricardão borracheiro", false));
         resp.add(new Resposta(9,"João Tripé", false));
         resp.add(new Resposta(24,"Alvaro alvinho", true));
-        perg1.Respostas = resp;
+        perg1.respostas = resp;
         arrayPerguntas.add(perg1);
 
-        for (int i = 0; i < 4; i++) {
-            boolean achouCorreto = false;
-            int randomCorreto = random.nextInt(4);
-
-            Pergunta objPergunta = new Pergunta();
-            objPergunta.Id = i;
-            objPergunta.Pergunta = "Esta é uma pergunta aleatória [ " + i + " ]";
-
-            ArrayList<Resposta> listaRespostas = new ArrayList<Resposta>();
-
-            for (int j = 0; j < 4; j++) {
-                Resposta resposta = new Resposta();
-                resposta.Id = j;
-                resposta.Resposta = "Res. pergunta " + i + ", id = " + j;
-
-                if(j == randomCorreto && !achouCorreto) {
-                    resposta.BolCorreto = true;
-                    achouCorreto = true;
-                } else {
-                    resposta.BolCorreto = false;
-                }
-                listaRespostas.add(resposta);
-            }
-            objPergunta.Respostas = listaRespostas;
-            arrayPerguntas.add(objPergunta);
-        }
+//        for (int i = 0; i < 4; i++) {
+//            boolean achouCorreto = false;
+//            int randomCorreto = random.nextInt(4);
+//
+//            Pergunta objPergunta = new Pergunta();
+//            objPergunta.idPergunta = i;
+//            objPergunta.pergunta = "Esta é uma pergunta aleatória [ " + i + " ]";
+//
+//            ArrayList<Resposta> listaRespostas = new ArrayList<Resposta>();
+//
+//            for (int j = 0; j < 4; j++) {
+//                Resposta resposta = new Resposta();
+//                resposta.idResposta = j;
+//                resposta.resposta = "Res. pergunta " + i + ", id = " + j;
+//
+//                if(j == randomCorreto && !achouCorreto) {
+//                    resposta.respostaCerta = true;
+//                    achouCorreto = true;
+//                } else {
+//                    resposta.respostaCerta = false;
+//                }
+//                listaRespostas.add(resposta);
+//            }
+//            objPergunta.respostas = listaRespostas;
+//            arrayPerguntas.add(objPergunta);
+//        }
 
         intPerguntaAtual = 1; //Inicia em 1
         respostaTextView = (TextView) findViewById(R.id.respostaTextView);
@@ -127,7 +179,7 @@ public class MainActivity extends ActionBarActivity {
         Pergunta objPergunta = arrayPerguntas.get(intPerguntaAtual-1);
         Log.e(TAG,"intPerguntaAtual == " + intPerguntaAtual);
 
-        perguntaTextView.setText(objPergunta.Pergunta); //Adiciona na UI a pergunta dinâmica
+        perguntaTextView.setText(objPergunta.pergunta); //Adiciona na UI a pergunta dinâmica
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         //Limpa os botões da TableRows
@@ -136,15 +188,15 @@ public class MainActivity extends ActionBarActivity {
         }
 
         //popula e infla a UI com as respostas
-        for(int row = 0; row < objPergunta.Respostas.size(); row++){
+        for(int row = 0; row < objPergunta.respostas.size(); row++){
             TableRow currentTableRow = getTableRow(row);
 
                  //Infla button_resposta.xml para criar novos botões
                  Button btnNovaPergunta = (Button) inflater.inflate(R.layout.button_resposta, null);
 
                  //Nomeia botões com as respostas
-                 String strResposta = objPergunta.Respostas.get(row).Resposta;
-                 //btnNovaPergunta.setId(objPergunta.Respostas.get(row).Id); //Pode setar a ID da pergunta mesmo
+                 String strResposta = objPergunta.respostas.get(row).resposta;
+                 //btnNovaPergunta.setId(objPergunta.respostas.get(row).idResposta); //Pode setar a ID da pergunta mesmo
                  btnNovaPergunta.setId(row);
                  btnNovaPergunta.setText(strResposta);
 
@@ -174,10 +226,10 @@ public class MainActivity extends ActionBarActivity {
 
         Pergunta perguntaAtual = arrayPerguntas.get(intPerguntaAtual - 1);
         int respostaId = respostaButton.getId();
-        boolean bolAcertou = perguntaAtual.Respostas.get(respostaId).BolCorreto;
+        boolean bolAcertou = perguntaAtual.respostas.get(respostaId).respostaCerta;
 
-        Log.e(TAG, "Resposta ID = " + respostaId);
-        Log.e(TAG, "Pergunta atual = " + perguntaAtual.Id);
+        Log.e(TAG, "resposta ID = " + respostaId);
+        Log.e(TAG, "pergunta atual = " + perguntaAtual.idPergunta);
         Log.e(TAG, "Acertei? " + bolAcertou);
 
         if (bolAcertou) {
@@ -232,7 +284,7 @@ public class MainActivity extends ActionBarActivity {
         //Limpa resposta(acertou ou errou)
         respostaTextView.setText("");
 
-        //Limpa os botões da TableRows, Respostas
+        //Limpa os botões da TableRows, respostas
         for(int row = 0; row < buttonTableLayout.getChildCount(); ++row) {
             ((TableRow) buttonTableLayout.getChildAt(row)).removeAllViews();
         }
