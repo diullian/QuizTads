@@ -68,116 +68,11 @@ public class MainActivity extends ActionBarActivity {
 
         arrayPerguntas = new ArrayList<Pergunta>(); //Cria array de perguntas
         buttonTableLayout = (TableLayout) findViewById(R.id.buttonTableLayout);
+        numeroQuestaoTextView = (TextView) findViewById(R.id.numeroQuestaoTextView);
+        respostaTextView = (TextView) findViewById(R.id.respostaTextView);
+        perguntaTextView = (TextView) findViewById(R.id.perguntaTextView);
         random = new Random();
         handler = new Handler();
-
-        /*Teste WS */
-
-
-
-
-
-        new Thread(){
-
-            public void run(){
-
-                ArrayList<Resposta> resp = new ArrayList<>();
-                Pergunta perg1 = new Pergunta(7, "BLABLABALBA BLEBLE?");
-                resp.add(new Resposta(4,"Robson robinho", false));
-                resp.add(new Resposta(7,"Ricardão borracheiro", false));
-                resp.add(new Resposta(9,"João Tripé", false));
-                resp.add(new Resposta(24,"Alvaro alvinho", true));
-                perg1.respostas = resp;
-
-                ArrayList<Resposta> resp2 = new ArrayList<>();
-                Pergunta perg2 = new Pergunta(9, "Segunda pergunta mano");
-                resp2.add(new Resposta(4,"Foca", false));
-                resp2.add(new Resposta(7,"Ricici", false));
-                resp2.add(new Resposta(9,"Bobão", false));
-                resp2.add(new Resposta(24,"Teste", true));
-                perg2.respostas = resp2;
-
-                List<Pergunta> aux = new ArrayList<>();
-                aux.add(perg1);
-                aux.add(perg2);
-
-                Gson gson = new Gson();
-                String teste =  gson.toJson(aux);
-
-                String url = "http://quizws.jelastic.websolute.net.br/quizws/service/getRandomQuiz/5";
-                WebService ws = new WebService(url);
-                Map params = new HashMap();
-                String response = ws.webGet("",params);
-               // HttpResponse response = ws.response;
-
-                InputStream inputStream = null;
-                String result = null;
-
-                try{
-
-                    //JSONArray arrayJson = new JSONArray(response);
-                    //JSONObject arrayJson = new JSONObject(teste);
-                    JSONArray ja = new JSONArray(teste);
-
-                    for(int i =0; i < ja.length(); i++){
-                        try{
-                            JSONObject obj1 = ja.getJSONObject(i);
-
-                            Log.e(TAG,"OBJETO " + i + " = " + obj1.getString("pergunta"));
-                        }catch(JSONException ex){
-                            Log.e(TAG,"JSON PAU ! " + ex);
-                        }
-                    }
-
-                    //String obj = arrayJson.getString("pergunta").toString();
-                    //funfou tb
-//                    JSONArray json = new JSONArray(response);
-//                    JSONObject arrays = json.optJSONObject(0);
-//                    Log.e(TAG, "array PAU [2] = " + arrays);
-
-
-                    //Teste google
-                    //GsonBuilder gsonBuilder = new GsonBuilder();
-//                    Gson gson = gsonBuilder.create();
-//
-//                    List<Pergunta> perguntas = new ArrayList<Pergunta>();
-//                    perguntas = Arrays.asList(gson.fromJson(response, Pergunta[].class));
-//
-//                    Type type = new TypeToken<List<Pergunta>>(){}.getType();
-//                    List<Pergunta> inpList = new Gson().fromJson(obj,type);
-//                    for (int i=0;i<inpList.size();i++) {
-//                        Pergunta x = inpList.get(i);
-//                        arrayPerguntas.add(x);
-//                    }
-
-                    //HttpEntity entity = response.getEntity();
-                    //result = new String(EntityUtils.toString(entity));
-
-                    //inputStream = entity.getContent();
-/*
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
-                    StringBuilder sb = new StringBuilder();
-
-                    String line = null;
-                    while ((line = reader.readLine()) != null)
-                    {
-                        sb.append(line + "\n");
-                    }
-                    result = sb.toString();
-*/
-                    Log.e(TAG,"RESULTADO *** 13 **** = ");
-
-                }catch(Exception ex){
-                    Log.e(TAG," GOOGLE JSON [** 19 ***]", ex);
-                   // ex.printStackTrace();
-                }
-
-            }
-        }.start();
-
-
-
-
         /*Fim teste*/
 
         resetQuiz();
@@ -185,57 +80,76 @@ public class MainActivity extends ActionBarActivity {
 
 
     public void resetQuiz(){
-
         tentativas = 0; //Inicializa tentativas como 0
-
-        //arrayPerguntas.clear();
-
-        ArrayList<Resposta> resp = new ArrayList<>();
-        Pergunta perg1 = new Pergunta(7, "Qual o nome do cara mais viado que vc conhece?");
-        resp.add(new Resposta(4,"Robson robinho", false));
-        resp.add(new Resposta(7,"Ricardão borracheiro", false));
-        resp.add(new Resposta(9,"João Tripé", false));
-        resp.add(new Resposta(24,"Alvaro alvinho", true));
-        perg1.respostas = resp;
-        arrayPerguntas.add(perg1);
-
-//        for (int i = 0; i < 4; i++) {
-//            boolean achouCorreto = false;
-//            int randomCorreto = random.nextInt(4);
-//
-//            Pergunta objPergunta = new Pergunta();
-//            objPergunta.idPergunta = i;
-//            objPergunta.pergunta = "Esta é uma pergunta aleatória [ " + i + " ]";
-//
-//            ArrayList<Resposta> listaRespostas = new ArrayList<Resposta>();
-//
-//            for (int j = 0; j < 4; j++) {
-//                Resposta resposta = new Resposta();
-//                resposta.idResposta = j;
-//                resposta.resposta = "Res. pergunta " + i + ", id = " + j;
-//
-//                if(j == randomCorreto && !achouCorreto) {
-//                    resposta.respostaCerta = true;
-//                    achouCorreto = true;
-//                } else {
-//                    resposta.respostaCerta = false;
-//                }
-//                listaRespostas.add(resposta);
-//            }
-//            objPergunta.respostas = listaRespostas;
-//            arrayPerguntas.add(objPergunta);
-//        }
-
+        arrayPerguntas.clear();
         intPerguntaAtual = 1; //Inicia em 1
-        respostaTextView = (TextView) findViewById(R.id.respostaTextView);
-        perguntaTextView = (TextView) findViewById(R.id.perguntaTextView);
+        respostaTextView.setText("");
 
-        iniciaQuiz();
+        new Thread(){
+            public void run(){
+//                String url = "http://quizws.jelastic.websolute.net.br/quizws/service/getRandomQuiz/5";
+//                String url = "http://default-environment-jjppvgvpnp.elasticbeanstalk.com/service/getRandomQuiz"; //com objeto quiz : {}
+                //String url = "http://default-environment-jjppvgvpnp.elasticbeanstalk.com/service/getRandomQuiz/5"; //sem objeto quiz {}
+                String url = "http://default-environment-jjppvgvpnp.elasticbeanstalk.com/service/getRandomQuiz";
+                WebService ws = new WebService(url);
+                Map params = new HashMap();
+                String response = ws.webGet("",params);
+                // HttpResponse response = ws.response;
+
+                InputStream inputStream = null;
+                String result = null;
+
+                try{
+                    JSONArray jsonWS = new JSONArray(response);
+
+                    for(int i =0; i < jsonWS.length(); i++){
+                        try{
+                            JSONObject objPerguntaWS = jsonWS.getJSONObject(i).getJSONObject("pergunta");
+                            Pergunta pergunta = new Pergunta();
+
+                            pergunta.setIdPergunta(objPerguntaWS.getInt("idPergunta"));
+                            pergunta.setPergunta(objPerguntaWS.getString("pergunta"));
+                            ArrayList<Resposta> respostas = new ArrayList<Resposta>();
+
+                            JSONArray arrayRespostas = objPerguntaWS.getJSONArray("respostas");
+
+                            for(int j = 0; j < arrayRespostas.length(); j++){
+                                JSONObject objRespostaWS = arrayRespostas.getJSONObject(j);
+                                respostas.add(new Resposta(objRespostaWS.getInt("idResposta"),objRespostaWS.getString("resposta"),objRespostaWS.getBoolean("respostaCerta")));
+                                Log.e(TAG,"obj RESPOSTA ID " + i + " = " + objRespostaWS.getInt("idResposta") + "// correto?" + objRespostaWS.getBoolean("respostaCerta"));
+                            }
+
+                            pergunta.setRespostas(respostas);
+                            arrayPerguntas.add(pergunta);
+                            Log.e(TAG,"Pergunta do WS " + i + " = " + objPerguntaWS.getString("pergunta"));
+                        }catch(JSONException ex){
+                            Log.e(TAG,"JSON PAU ! " + ex);
+                        }
+                    }
+
+                    Log.e(TAG,"RESULTADO *** 27 **** = ");
+
+                }catch(Exception ex){
+                    Log.e(TAG," GOOGLE JSON [** 32 ***]", ex);
+                    // ex.printStackTrace();
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // This code will always run on the UI thread, therefore is safe to modify UI elements.
+                        iniciaQuiz();
+                    }
+                });
+
+            }
+        }.start();
+
     }
 
     public void iniciaQuiz(){
 
-        numeroQuestaoTextView = (TextView) findViewById(R.id.numeroQuestaoTextView);
+
         numeroQuestaoTextView.setText(
                 getResources().getString(R.string.questao) + " " + intPerguntaAtual +  " " +
                         getResources().getString(R.string.de) + " " + totalMaxPergunta
@@ -288,9 +202,9 @@ public class MainActivity extends ActionBarActivity {
 
         Log.e(TAG," select resposta = tentativa " + tentativas + " // totalMax = " + totalMaxPergunta);
 
-
         Pergunta perguntaAtual = arrayPerguntas.get(intPerguntaAtual - 1);
         int respostaId = respostaButton.getId();
+
         boolean bolAcertou = perguntaAtual.respostas.get(respostaId).respostaCerta;
 
         Log.e(TAG, "resposta ID = " + respostaId);
