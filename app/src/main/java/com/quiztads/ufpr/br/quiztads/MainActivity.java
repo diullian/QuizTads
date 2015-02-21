@@ -3,6 +3,9 @@ package com.quiztads.ufpr.br.quiztads;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -15,28 +18,16 @@ import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
+
 
 public class MainActivity extends ActionBarActivity {
 
@@ -75,9 +66,39 @@ public class MainActivity extends ActionBarActivity {
         handler = new Handler();
         /*Fim teste*/
 
-        resetQuiz();
+        if(IsConnected(getBaseContext())) {
+            resetQuiz();
+        }else{
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Problema na conexão");
+
+            //Resultado do jogo
+            builder.setMessage("ATENÇÃO: Você não está conectado a Internet. Verifique a sua conexão!");
+            builder.setCancelable(false);
+
+            //Adiciona botão para Resetar o quiz
+            builder.setPositiveButton("Tentar novamente!", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent i = getBaseContext().getPackageManager()
+                                    .getLaunchIntentForPackage( getBaseContext().getPackageName() );
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                }
+            });
+        }
     }
 
+    public static boolean IsConnected(Context context){
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        if (activeNetwork == null){
+            return false;
+        }
+
+        return activeNetwork.isConnectedOrConnecting();
+    }
 
     public void resetQuiz(){
         tentativas = 0; //Inicializa tentativas como 0
