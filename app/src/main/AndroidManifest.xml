@@ -22,45 +22,12 @@
             android:noHistory="true"
             android:name=".RelatorioActivity"
             android:label="@string/relatorio" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity
             android:noHistory="true"
             android:name=".BDActivity"
             android:label="@string/ranking" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-
-        <activity
-            android:noHistory="true"
-            android:name=".RelatorioActivity"
-            android:label="@string/relatorio" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:noHistory="true"
-            android:name=".BDActivity"
-            android:label="@string/ranking" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
     </application>

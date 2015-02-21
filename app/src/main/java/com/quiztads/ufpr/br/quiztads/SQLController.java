@@ -44,8 +44,7 @@ public class SQLController {
         String[] allColumns = new String[] { BancoDados.MEMBER_ID, BancoDados.MEMBER_NAME,
                 BancoDados.MEMBER_SCORE };
 
-        Cursor c = database.query(BancoDados.TABLE_MEMBER, allColumns, null, null, null,
-                null, null);
+        Cursor c = database.query(BancoDados.TABLE_MEMBER, allColumns, null, null, null, null, "score DESC");
 
         if (c != null) {
             c.moveToFirst();
