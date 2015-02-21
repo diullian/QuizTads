@@ -3,6 +3,7 @@ package com.quiztads.ufpr.br.quiztads;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -282,4 +283,11 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void onClick(View view){
+
+        Intent it = new Intent(this,BDActivity.class);
+        startActivity(it);
+    }
+
 }
