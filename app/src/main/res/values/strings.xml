@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">QuizTads</string>
-    <string name="bd_activity">BDActivity</string>
     <string name="quiz_title">Quiz TADS</string>
     <string name="action_settings">Settings</string>
     <string name="questao">Questão</string>
