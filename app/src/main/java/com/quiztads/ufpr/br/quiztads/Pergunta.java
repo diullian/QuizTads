@@ -1,26 +1,47 @@
 package com.quiztads.ufpr.br.quiztads;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
- * Created by DIULLIAN on 14/02/2015.
+ * Created by ALVARO, DIEGO E DIULLIAN
  */
 public class Pergunta {
-    public int Id;
-    public String Pergunta;
-    //public List<Resposta> Respostas;
-    public ArrayList<Resposta> Respostas;
+    public int idPergunta;
+    public String pergunta;
+    //public List<resposta> respostas;
+    public ArrayList<Resposta> respostas;
 
     public Pergunta(){
 
     }
 
+    public int getIdPergunta() {
+        return idPergunta;
+    }
+
+    public void setIdPergunta(int idPergunta) {
+        this.idPergunta = idPergunta;
+    }
+
+    public String getPergunta() {
+        return pergunta;
+    }
+
+    public void setPergunta(String pergunta) {
+        this.pergunta = pergunta;
+    }
+
+    public ArrayList<Resposta> getRespostas() {
+        return respostas;
+    }
+
+    public void setRespostas(ArrayList<Resposta> respostas) {
+        this.respostas = respostas;
+    }
+
     public Pergunta(int id, String pergunta){
-        this.Id = id;
-        this.Pergunta = pergunta;
+        this.idPergunta = id;
+        this.pergunta = pergunta;
     }
 
 }
