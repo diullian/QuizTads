@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -18,15 +19,18 @@ import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
 
 
 public class MainActivity extends ActionBarActivity {
@@ -51,6 +55,8 @@ public class MainActivity extends ActionBarActivity {
     private int intPerguntaAtual; //Numero de pergunta Atual
     private int totalOpcaoResposta = 4;
     private int totalMaxPergunta = 5;
+    private ArrayList<Relatorio> relatorio = new ArrayList<Relatorio>();
+    int notaFinal = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -235,13 +241,31 @@ public class MainActivity extends ActionBarActivity {
         if (bolAcertou) {
             respostaTextView.setText("Acertou! :D");
             respostaTextView.setTextColor(getResources().getColor(R.color.correct_answer));
+            // Acrescenta na nota final caso a resposta esteja correta.
+            notaFinal += 20;
         } else {
             respostaTextView.setText("Errou! :/");
             respostaTextView.setTextColor(getResources().getColor(R.color.incorrect_answer));
         }
 
+        // Adiciona o resultado no HashMap.
+        relatorio.add(new Relatorio("Questão " +intPerguntaAtual, bolAcertou?"Correta":"Incorreta"));
+
 
         if(tentativas >= totalMaxPergunta){
+
+            // Define a nota final.
+            relatorio.add(new Relatorio("Nota Final", String.valueOf(notaFinal)));
+            //hmRelatorio.put("Nota Final", String.valueOf(notaFinal));
+
+            for(Relatorio rel : relatorio) {
+                Log.e(TAG, rel.getParam() + rel.getValue());
+            }
+
+            //Set<String> keySet = hmRelatorio.keySet();
+            //for (String key : keySet) {
+            //    Log.e(TAG, "Word : " + key + " : Result : " + hmRelatorio.get(key));
+            //}
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Finish!");
@@ -254,7 +278,11 @@ public class MainActivity extends ActionBarActivity {
             builder.setPositiveButton("Finalizar", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    resetQuiz();
+                        Intent it = new Intent(MainActivity.this, RelatorioActivity.class);
+                        it.putExtra("relatorio", relatorio);
+                        startActivity(it);
+
+                    //resetQuiz();
                 }
             });
 
@@ -262,7 +290,9 @@ public class MainActivity extends ActionBarActivity {
             resetDialog.show();
 
         }else {
+
             intPerguntaAtual++;
+
             //Carrega próxima bandeira após delay de 1 segundo
             handler.postDelayed(new Runnable() {
                 @Override
@@ -334,4 +364,6 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }
