@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 
 
@@ -72,39 +73,9 @@ public class MainActivity extends ActionBarActivity {
         handler = new Handler();
         /*Fim teste*/
 
-        if(IsConnected(getBaseContext())) {
-            resetQuiz();
-        }else{
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Problema na conexão");
-
-            //Resultado do jogo
-            builder.setMessage("ATENÇÃO: Você não está conectado a Internet. Verifique a sua conexão!");
-            builder.setCancelable(false);
-
-            //Adiciona botão para Resetar o quiz
-            builder.setPositiveButton("Tentar novamente!", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent i = getBaseContext().getPackageManager()
-                                    .getLaunchIntentForPackage( getBaseContext().getPackageName() );
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(i);
-                }
-            });
-        }
+        resetQuiz();
     }
 
-    public static boolean IsConnected(Context context){
-        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-
-        if (activeNetwork == null){
-            return false;
-        }
-
-        return activeNetwork.isConnectedOrConnecting();
-    }
 
     public void resetQuiz(){
         tentativas = 0; //Inicializa tentativas como 0
@@ -178,7 +149,7 @@ public class MainActivity extends ActionBarActivity {
 
 
         numeroQuestaoTextView.setText(
-                getResources().getString(R.string.questao) + " " + intPerguntaAtual +  " " +
+                getResources().getString(R.string.questao) + " " + intPerguntaAtual + " " +
                         getResources().getString(R.string.de) + " " + totalMaxPergunta
         );
 
@@ -227,7 +198,7 @@ public class MainActivity extends ActionBarActivity {
         tentativas++;
         disableButtons(); //Desabilita outros botões de resposta
 
-        Log.e(TAG," select resposta = tentativa " + tentativas + " // totalMax = " + totalMaxPergunta);
+        Log.e(TAG, " select resposta = tentativa " + tentativas + " // totalMax = " + totalMaxPergunta);
 
         Pergunta perguntaAtual = arrayPerguntas.get(intPerguntaAtual - 1);
         int respostaId = respostaButton.getId();
