@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.content.Intent;
@@ -231,11 +233,6 @@ public class MainActivity extends ActionBarActivity {
                 Log.e(TAG, rel.getParam() + rel.getValue());
             }
 
-            //Set<String> keySet = hmRelatorio.keySet();
-            //for (String key : keySet) {
-            //    Log.e(TAG, "Word : " + key + " : Result : " + hmRelatorio.get(key));
-            //}
-
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("PARABÉNS!");
 
@@ -243,15 +240,12 @@ public class MainActivity extends ActionBarActivity {
             builder.setMessage("Você respondeu todas as " + totalMaxPergunta + " perguntas!");
             builder.setCancelable(false);
 
-            //Adiciona botão para Resetar o quiz
             builder.setPositiveButton("Continuar", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Intent it = new Intent(MainActivity.this, RelatorioActivity.class);
                     it.putExtra("relatorio", relatorio);
                     startActivity(it);
-
-                    //resetQuiz();
                 }
             });
 
@@ -311,5 +305,15 @@ public class MainActivity extends ActionBarActivity {
         return (TableRow) buttonTableLayout.getChildAt(row);
     }
 
+    @Override
+    /**
+     * Desabilita botão volta, para não retornar as activities anteriores.
+     */
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        startActivity(intent);
+    }
 
 }

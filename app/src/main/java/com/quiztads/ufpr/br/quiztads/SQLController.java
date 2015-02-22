@@ -10,6 +10,9 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class SQLController {
 
     private BancoDados dbhelper;
@@ -33,7 +36,11 @@ public class SQLController {
 
     public void insertData(String name, String score) {
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = new Date();
+
         ContentValues cv = new ContentValues();
+        cv.put(BancoDados.MEMBER_DATE, dateFormat.format(date));
         cv.put(BancoDados.MEMBER_NAME, name);
         cv.put(BancoDados.MEMBER_SCORE, score);
         database.insert(BancoDados.TABLE_MEMBER, null, cv);
@@ -42,11 +49,10 @@ public class SQLController {
 
     public Cursor readEntry() {
 
-        String[] allColumns = new String[]{BancoDados.MEMBER_NAME,
-                BancoDados.MEMBER_SCORE};
+        //String[] allColumns = new String[]{BancoDados.MEMBER_NAME, BancoDados.MEMBER_SCORE};
 
         //Cursor c = database.query(BancoDados.TABLE_MEMBER, allColumns, null, null, null, null, "score DESC");
-        Cursor c = database.rawQuery("SELECT '#' || ROWID, name, score FROM (SELECT name, score from players_score order by score desc) order by rowid", null);
+        Cursor c = database.rawQuery("SELECT '#' || ROWID, name, score_date, score FROM (SELECT name, score_date, score from players_score order by score desc) order by rowid", null);
 
         if (c != null) {
             c.moveToFirst();

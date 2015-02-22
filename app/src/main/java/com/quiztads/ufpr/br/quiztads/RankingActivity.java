@@ -7,10 +7,13 @@ package com.quiztads.ufpr.br.quiztads;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -22,29 +25,36 @@ import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
-public class BDActivity extends ActionBarActivity {
+public class RankingActivity extends ActionBarActivity {
+
+    private final String TAG = "RankingActivity";
 
     TableLayout table_layout;
 
-    SQLController sqlcon;
-
     ProgressDialog PD;
+
+    String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bd_layout);
 
-        sqlcon = new SQLController(this);
+        Intent intent = getIntent();
+        name = (String) intent.getSerializableExtra("name");
 
         table_layout = (TableLayout) findViewById(R.id.tableLayout1);
 
-        BuildTable();
+        buildRankingTable();
 
     }
 
-    private void BuildTable() {
+    /**
+     * Método chamado ao iniciar a activity para criar a tabela de Ranking, com acesso ao BD.
+     */
+    private void buildRankingTable() {
 
+        SQLController sqlcon = new SQLController(this);
         sqlcon.open();
         Cursor c = sqlcon.readEntry();
 
@@ -73,6 +83,12 @@ public class BDActivity extends ActionBarActivity {
 
                 tv.setText(c.getString(j));
 
+                if (c.getString(j).equalsIgnoreCase(name)) {
+                    Log.e(TAG, name);
+                    Log.e(TAG, c.getString(j));
+                    row.setBackgroundColor(Color.YELLOW);
+                }
+
                 row.addView(tv);
 
             }
@@ -85,14 +101,24 @@ public class BDActivity extends ActionBarActivity {
         sqlcon.close();
     }
 
+    /**
+     * Método utilizado pelo btnRestart que reinicia a plicação, chamando a MainActivity
+     *
+     * @param view
+     */
     public void onClickRestart(View view) {
         Intent it = new Intent(this, MainActivity.class);
         startActivity(it);
     }
 
-    public void onClickExit() {
-        Intent it = new Intent(this, MainActivity.class);
-        startActivity(it);
+    @Override
+    /**
+     * Desabilita botão volta, para não retornar as activities anteriores.
+     */
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        startActivity(intent);
     }
-
 }

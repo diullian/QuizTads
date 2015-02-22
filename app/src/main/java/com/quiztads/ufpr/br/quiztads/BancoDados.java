@@ -15,6 +15,7 @@ public class BancoDados extends SQLiteOpenHelper {
     // TABLE INFORMATTION
     public static final String TABLE_MEMBER = "players_score";
     public static final String MEMBER_ID = "_id";
+    public static final String MEMBER_DATE = "score_date";
     public static final String MEMBER_NAME = "name";
     public static final String MEMBER_SCORE = "score";
 
@@ -26,7 +27,7 @@ public class BancoDados extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE = "create table " + TABLE_MEMBER
             + "(" + MEMBER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + MEMBER_NAME + " TEXT NOT NULL ," + MEMBER_SCORE
+            + MEMBER_DATE + " DATE NOT NULL ," + MEMBER_NAME + " TEXT NOT NULL ," + MEMBER_SCORE
             + " INT NOT NULL);";
 
     public BancoDados(Context context) {

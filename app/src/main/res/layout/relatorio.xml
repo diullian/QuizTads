@@ -18,16 +18,6 @@
     android:orientation="vertical"
     android:weightSum="1">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:id="@+id/titleRelatorio"
-        android:text="@string/titleRelatorio"
-        android:layout_marginBottom="10dp"
-        android:textSize="@dimen/title_size"
-        />
-
     <EditText
         android:layout_width="208dp"
         android:layout_height="wrap_content"

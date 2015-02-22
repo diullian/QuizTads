@@ -2,15 +2,11 @@ package com.quiztads.ufpr.br.quiztads;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -18,12 +14,9 @@ import android.widget.TextView;
 import android.widget.TableRow.LayoutParams;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Set;
 
 /**
- * Created by G0032194 on 21/02/2015.
+ *
  */
 public class RelatorioActivity extends ActionBarActivity {
 
@@ -36,6 +29,8 @@ public class RelatorioActivity extends ActionBarActivity {
     TableLayout tableRelatorio;
 
     EditText playerName;
+
+    String name;
 
     SQLController sqlcon;
 
@@ -100,7 +95,8 @@ public class RelatorioActivity extends ActionBarActivity {
 
         new MyAsync().execute();
 
-        Intent it = new Intent(this, BDActivity.class);
+        Intent it = new Intent(this, RankingActivity.class);
+        it.putExtra("name", name);
         startActivity(it);
     }
 
@@ -121,12 +117,15 @@ public class RelatorioActivity extends ActionBarActivity {
         @Override
         protected Void doInBackground(Void... params) {
 
-            String name = playerName.getText().toString();
+            name = playerName.getText().toString();
+
+            if (name == null || "".equalsIgnoreCase(name)) {
+                name = "Anônimo";
+            }
 
             // inserting data
             sqlcon.open();
             sqlcon.insertData(name, score);
-            // BuildTable();
             return null;
         }
 
@@ -135,6 +134,17 @@ public class RelatorioActivity extends ActionBarActivity {
             super.onPostExecute(result);
             PD.dismiss();
         }
+    }
+
+    @Override
+    /**
+     * Desabilita botão volta, para não retornar as activities anteriores.
+     */
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        startActivity(intent);
     }
 
 }
