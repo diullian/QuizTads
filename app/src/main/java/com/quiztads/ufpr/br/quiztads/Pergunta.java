@@ -11,7 +11,7 @@ public class Pergunta {
     //public List<resposta> respostas;
     public ArrayList<Resposta> respostas;
 
-    public Pergunta(){
+    public Pergunta() {
 
     }
 
@@ -39,7 +39,7 @@ public class Pergunta {
         this.respostas = respostas;
     }
 
-    public Pergunta(int id, String pergunta){
+    public Pergunta(int id, String pergunta) {
         this.idPergunta = id;
         this.pergunta = pergunta;
     }

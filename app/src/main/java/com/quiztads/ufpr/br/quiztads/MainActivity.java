@@ -33,7 +33,6 @@ import java.util.Random;
 import java.util.Set;
 
 
-
 public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = "MainActivity";
@@ -77,31 +76,31 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
-    public void resetQuiz(){
+    public void resetQuiz() {
         tentativas = 0; //Inicializa tentativas como 0
         arrayPerguntas.clear();
         intPerguntaAtual = 1; //Inicia em 1
         respostaTextView.setText("");
 
-        new Thread(){
-            public void run(){
+        new Thread() {
+            public void run() {
 //                String url = "http://quizws.jelastic.websolute.net.br/quizws/service/getRandomQuiz/5";
 //                String url = "http://default-environment-jjppvgvpnp.elasticbeanstalk.com/service/getRandomQuiz"; //com objeto quiz : {}
                 //String url = "http://default-environment-jjppvgvpnp.elasticbeanstalk.com/service/getRandomQuiz/5"; //sem objeto quiz {}
                 String url = "http://default-environment-jjppvgvpnp.elasticbeanstalk.com/service/getRandomQuiz";
                 WebService ws = new WebService(url);
                 Map params = new HashMap();
-                String response = ws.webGet("",params);
+                String response = ws.webGet("", params);
                 // HttpResponse response = ws.response;
 
                 InputStream inputStream = null;
                 String result = null;
 
-                try{
+                try {
                     JSONArray jsonWS = new JSONArray(response);
 
-                    for(int i =0; i < jsonWS.length(); i++){
-                        try{
+                    for (int i = 0; i < jsonWS.length(); i++) {
+                        try {
                             JSONObject objPerguntaWS = jsonWS.getJSONObject(i).getJSONObject("pergunta");
                             Pergunta pergunta = new Pergunta();
 
@@ -111,24 +110,24 @@ public class MainActivity extends ActionBarActivity {
 
                             JSONArray arrayRespostas = objPerguntaWS.getJSONArray("respostas");
 
-                            for(int j = 0; j < arrayRespostas.length(); j++){
+                            for (int j = 0; j < arrayRespostas.length(); j++) {
                                 JSONObject objRespostaWS = arrayRespostas.getJSONObject(j);
-                                respostas.add(new Resposta(objRespostaWS.getInt("idResposta"),objRespostaWS.getString("resposta"),objRespostaWS.getBoolean("respostaCerta")));
-                                Log.e(TAG,"obj RESPOSTA ID " + i + " = " + objRespostaWS.getInt("idResposta") + "// correto?" + objRespostaWS.getBoolean("respostaCerta"));
+                                respostas.add(new Resposta(objRespostaWS.getInt("idResposta"), objRespostaWS.getString("resposta"), objRespostaWS.getBoolean("respostaCerta")));
+                                Log.e(TAG, "obj RESPOSTA ID " + i + " = " + objRespostaWS.getInt("idResposta") + "// correto?" + objRespostaWS.getBoolean("respostaCerta"));
                             }
 
                             pergunta.setRespostas(respostas);
                             arrayPerguntas.add(pergunta);
-                            Log.e(TAG,"Pergunta do WS " + i + " = " + objPerguntaWS.getString("pergunta"));
-                        }catch(JSONException ex){
-                            Log.e(TAG,"JSON PAU ! " + ex);
+                            Log.e(TAG, "Pergunta do WS " + i + " = " + objPerguntaWS.getString("pergunta"));
+                        } catch (JSONException ex) {
+                            Log.e(TAG, "JSON PAU ! " + ex);
                         }
                     }
 
-                    Log.e(TAG,"RESULTADO *** 27 **** = ");
+                    Log.e(TAG, "RESULTADO *** 27 **** = ");
 
-                }catch(Exception ex){
-                    Log.e(TAG," GOOGLE JSON [** 32 ***]", ex);
+                } catch (Exception ex) {
+                    Log.e(TAG, " GOOGLE JSON [** 32 ***]", ex);
                     // ex.printStackTrace();
                 }
 
@@ -145,7 +144,7 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    public void iniciaQuiz(){
+    public void iniciaQuiz() {
 
 
         numeroQuestaoTextView.setText(
@@ -153,47 +152,46 @@ public class MainActivity extends ActionBarActivity {
                         getResources().getString(R.string.de) + " " + totalMaxPergunta
         );
 
-        Pergunta objPergunta = arrayPerguntas.get(intPerguntaAtual-1);
-        Log.e(TAG,"intPerguntaAtual == " + intPerguntaAtual);
+        Pergunta objPergunta = arrayPerguntas.get(intPerguntaAtual - 1);
+        Log.e(TAG, "intPerguntaAtual == " + intPerguntaAtual);
 
         perguntaTextView.setText(objPergunta.pergunta); //Adiciona na UI a pergunta dinâmica
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         //Limpa os botões da TableRows
-        for(int row = 0; row < buttonTableLayout.getChildCount(); ++row) {
+        for (int row = 0; row < buttonTableLayout.getChildCount(); ++row) {
             ((TableRow) buttonTableLayout.getChildAt(row)).removeAllViews();
         }
 
         //popula e infla a UI com as respostas
-        for(int row = 0; row < objPergunta.respostas.size(); row++){
+        for (int row = 0; row < objPergunta.respostas.size(); row++) {
             TableRow currentTableRow = getTableRow(row);
 
-                 //Infla button_resposta.xml para criar novos botões
-                 Button btnNovaPergunta = (Button) inflater.inflate(R.layout.button_resposta, null);
+            //Infla button_resposta.xml para criar novos botões
+            Button btnNovaPergunta = (Button) inflater.inflate(R.layout.button_resposta, null);
 
-                 //Nomeia botões com as respostas
-                 String strResposta = objPergunta.respostas.get(row).resposta;
-                 //btnNovaPergunta.setId(objPergunta.respostas.get(row).idResposta); //Pode setar a ID da pergunta mesmo
-                 btnNovaPergunta.setId(row);
-                 btnNovaPergunta.setText(strResposta);
+            //Nomeia botões com as respostas
+            String strResposta = objPergunta.respostas.get(row).resposta;
+            //btnNovaPergunta.setId(objPergunta.respostas.get(row).idResposta); //Pode setar a ID da pergunta mesmo
+            btnNovaPergunta.setId(row);
+            btnNovaPergunta.setText(strResposta);
 
-                 //Registra answerButtonListener para responder aos cliques
-                 btnNovaPergunta.setOnClickListener(respostaButtonListener);
-                 currentTableRow.addView(btnNovaPergunta);
+            //Registra answerButtonListener para responder aos cliques
+            btnNovaPergunta.setOnClickListener(respostaButtonListener);
+            currentTableRow.addView(btnNovaPergunta);
         }
     }
 
     //Chama quando um botao resposta é pressionado
-    private View.OnClickListener respostaButtonListener = new View.OnClickListener()
-    {
+    private View.OnClickListener respostaButtonListener = new View.OnClickListener() {
         @Override
-        public void onClick(View v){
+        public void onClick(View v) {
             selectResposta((Button) v); //Passa o componente selecionado
         }
     };
 
     //Chama quando usuario escolhe uma resposta
-    private void selectResposta(Button respostaButton){
+    private void selectResposta(Button respostaButton) {
         //REVISAR LÓGICA, POIS O getId pega ID DA PERGUTNA, certo entao seria o INDICE!
         tentativas++;
         disableButtons(); //Desabilita outros botões de resposta
@@ -220,16 +218,16 @@ public class MainActivity extends ActionBarActivity {
         }
 
         // Adiciona o resultado no HashMap.
-        relatorio.add(new Relatorio("Questão " +intPerguntaAtual, bolAcertou?"Correta":"Incorreta"));
+        relatorio.add(new Relatorio("Questão " + intPerguntaAtual, bolAcertou ? "Correta" : "Incorreta"));
 
 
-        if(tentativas >= totalMaxPergunta){
+        if (tentativas >= totalMaxPergunta) {
 
             // Define a nota final.
             relatorio.add(new Relatorio("Nota Final", String.valueOf(notaFinal)));
             //hmRelatorio.put("Nota Final", String.valueOf(notaFinal));
 
-            for(Relatorio rel : relatorio) {
+            for (Relatorio rel : relatorio) {
                 Log.e(TAG, rel.getParam() + rel.getValue());
             }
 
@@ -239,19 +237,19 @@ public class MainActivity extends ActionBarActivity {
             //}
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Finish!");
+            builder.setTitle("PARABÉNS!");
 
             //Resultado do jogo
-            builder.setMessage("Acabou o quiz, vc ja respondeu todas as " + totalMaxPergunta + " perguntas");
+            builder.setMessage("Você respondeu todas as " + totalMaxPergunta + " perguntas!");
             builder.setCancelable(false);
 
             //Adiciona botão para Resetar o quiz
-            builder.setPositiveButton("Finalizar", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton("Continuar", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                        Intent it = new Intent(MainActivity.this, RelatorioActivity.class);
-                        it.putExtra("relatorio", relatorio);
-                        startActivity(it);
+                    Intent it = new Intent(MainActivity.this, RelatorioActivity.class);
+                    it.putExtra("relatorio", relatorio);
+                    startActivity(it);
 
                     //resetQuiz();
                 }
@@ -260,7 +258,7 @@ public class MainActivity extends ActionBarActivity {
             AlertDialog resetDialog = builder.create();
             resetDialog.show();
 
-        }else {
+        } else {
 
             intPerguntaAtual++;
 
@@ -276,8 +274,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
-
-    public void carregaProximaPergunta(){
+    public void carregaProximaPergunta() {
 
         //Limpa a pergunta
         perguntaTextView.setText("");
@@ -286,7 +283,7 @@ public class MainActivity extends ActionBarActivity {
         respostaTextView.setText("");
 
         //Limpa os botões da TableRows, respostas
-        for(int row = 0; row < buttonTableLayout.getChildCount(); ++row) {
+        for (int row = 0; row < buttonTableLayout.getChildCount(); ++row) {
             ((TableRow) buttonTableLayout.getChildAt(row)).removeAllViews();
         }
 
@@ -296,44 +293,22 @@ public class MainActivity extends ActionBarActivity {
             public void run() {
                 iniciaQuiz();
             }
-        },1000);
+        }, 1000);
 
     }
 
     //Desabilita botões de resposta quando a resposta CORRETA é escolhida
-    private void disableButtons(){
-        for(int row = 0; row < buttonTableLayout.getChildCount();row++){
+    private void disableButtons() {
+        for (int row = 0; row < buttonTableLayout.getChildCount(); row++) {
             TableRow tableRow = (TableRow) buttonTableLayout.getChildAt(row);
-            for(int i = 0; i <tableRow.getChildCount(); i++){
+            for (int i = 0; i < tableRow.getChildCount(); i++) {
                 tableRow.getChildAt(i).setEnabled(false);
             }
         }
     }
 
-    private TableRow getTableRow(int row){
+    private TableRow getTableRow(int row) {
         return (TableRow) buttonTableLayout.getChildAt(row);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
 

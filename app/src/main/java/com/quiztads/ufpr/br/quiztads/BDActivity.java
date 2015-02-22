@@ -3,12 +3,16 @@ package com.quiztads.ufpr.br.quiztads;
 /**
  * Created by Diego on 18/02/2015.
  */
+
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -18,7 +22,7 @@ import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
-public class BDActivity extends Activity {
+public class BDActivity extends ActionBarActivity {
 
     TableLayout table_layout;
 
@@ -57,7 +61,7 @@ public class BDActivity extends Activity {
                     LayoutParams.WRAP_CONTENT));
 
             // inner for loop and occults id
-            for (int j = 1; j < cols; j++) {
+            for (int j = 0; j < cols; j++) {
 
                 TextView tv = new TextView(this);
                 tv.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
@@ -79,6 +83,16 @@ public class BDActivity extends Activity {
 
         }
         sqlcon.close();
+    }
+
+    public void onClickRestart(View view) {
+        Intent it = new Intent(this, MainActivity.class);
+        startActivity(it);
+    }
+
+    public void onClickExit() {
+        Intent it = new Intent(this, MainActivity.class);
+        startActivity(it);
     }
 
 }

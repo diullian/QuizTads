@@ -3,6 +3,7 @@ package com.quiztads.ufpr.br.quiztads;
 /**
  * Created by Diego on 18/02/2015.
  */
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -41,10 +42,11 @@ public class SQLController {
 
     public Cursor readEntry() {
 
-        String[] allColumns = new String[] { BancoDados.MEMBER_ID, BancoDados.MEMBER_NAME,
-                BancoDados.MEMBER_SCORE };
+        String[] allColumns = new String[]{BancoDados.MEMBER_NAME,
+                BancoDados.MEMBER_SCORE};
 
-        Cursor c = database.query(BancoDados.TABLE_MEMBER, allColumns, null, null, null, null, "score DESC");
+        //Cursor c = database.query(BancoDados.TABLE_MEMBER, allColumns, null, null, null, null, "score DESC");
+        Cursor c = database.rawQuery("SELECT '#' || ROWID, name, score FROM (SELECT name, score from players_score order by score desc) order by rowid", null);
 
         if (c != null) {
             c.moveToFirst();

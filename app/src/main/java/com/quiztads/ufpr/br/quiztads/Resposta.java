@@ -9,11 +9,11 @@ public class Resposta {
     public String resposta;
     public boolean respostaCerta;
 
-    public Resposta(){
+    public Resposta() {
 
     }
 
-    public Resposta(int id, String resposta, boolean correto){
+    public Resposta(int id, String resposta, boolean correto) {
         this.idResposta = id;
         this.resposta = resposta;
         this.respostaCerta = correto;

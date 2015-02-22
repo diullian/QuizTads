@@ -45,7 +45,7 @@ public class WebService {
     String webServiceUrl;
 
     //The serviceName should be the name of the Service you are going to be using.
-    public WebService(String serviceName){
+    public WebService(String serviceName) {
         HttpParams myParams = new BasicHttpParams();
 
         HttpConnectionParams.setConnectionTimeout(myParams, 10000);
@@ -61,15 +61,14 @@ public class WebService {
 
         JSONObject jsonObject = new JSONObject();
 
-        for (Map.Entry<String, Object> param : params.entrySet()){
+        for (Map.Entry<String, Object> param : params.entrySet()) {
             try {
                 jsonObject.put(param.getKey(), param.getValue());
-            }
-            catch (JSONException e) {
-                Log.e("Groshie", "JSONException : "+e);
+            } catch (JSONException e) {
+                Log.e("Groshie", "JSONException : " + e);
             }
         }
-        return webInvoke(methodName,  jsonObject.toString(), "application/json");
+        return webInvoke(methodName, jsonObject.toString(), "application/json");
     }
 
     private String webInvoke(String methodName, String data, String contentType) {
@@ -93,9 +92,9 @@ public class WebService {
         }
 
         try {
-            tmp = new StringEntity(data,"UTF-8");
+            tmp = new StringEntity(data, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            Log.e("Groshie", "HttpUtils : UnsupportedEncodingException : "+e);
+            Log.e("Groshie", "HttpUtils : UnsupportedEncodingException : " + e);
         }
 
         httpPost.setEntity(tmp);
@@ -103,7 +102,7 @@ public class WebService {
         Log.d("Groshie", webServiceUrl + "?" + data);
 
         try {
-            response = httpClient.execute(httpPost,localContext);
+            response = httpClient.execute(httpPost, localContext);
 
             if (response != null) {
                 ret = EntityUtils.toString(response.getEntity());
@@ -120,7 +119,7 @@ public class WebService {
         String getUrl = webServiceUrl + methodName;
 
         int i = 0;
-        if(!params.isEmpty()) {
+        if (!params.isEmpty()) {
             for (Map.Entry<String, String> param : params.entrySet()) {
                 if (i == 0) {
                     getUrl += "?";
@@ -140,7 +139,7 @@ public class WebService {
         }
 
         httpGet = new HttpGet(getUrl);
-        Log.e("WebGetURL: ",getUrl);
+        Log.e("WebGetURL: ", getUrl);
 
         try {
             response = httpClient.execute(httpGet);
@@ -163,10 +162,6 @@ public class WebService {
         String getUrl = webServiceUrl + methodName;
 
 
-
-
-
-
         httpPost = new HttpPost(getUrl);
 
         try {
@@ -176,7 +171,7 @@ public class WebService {
             e1.printStackTrace();
         }
 
-        Log.e("WebGetURL: ",getUrl);
+        Log.e("WebGetURL: ", getUrl);
 
 
         try {
@@ -206,7 +201,7 @@ public class WebService {
         if (!(conn instanceof HttpURLConnection))
             throw new IOException("Not an HTTP connection");
 
-        try{
+        try {
             HttpURLConnection httpConn = (HttpURLConnection) conn;
             httpConn.setAllowUserInteraction(false);
             httpConn.setInstanceFollowRedirects(true);
