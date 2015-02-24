@@ -50,6 +50,7 @@ public class MainActivity extends ActionBarActivity {
     private Handler handler; //Usada para o delay da próxima pergunta
 
     /* controle do QUIZ */
+    private boolean quizIniciado = false;
     private List<Pergunta> arrayPerguntas; //Array de perguntas, sendo populado do WS
     private int tentativas; //Número de tentativas
     private int totalAcerto; //Número de acertos
@@ -60,10 +61,12 @@ public class MainActivity extends ActionBarActivity {
     private ArrayList<Relatorio> relatorio = new ArrayList<Relatorio>();
     int notaFinal = 0;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         arrayPerguntas = new ArrayList<Pergunta>(); //Cria array de perguntas
         buttonTableLayout = (TableLayout) findViewById(R.id.buttonTableLayout);
@@ -73,8 +76,32 @@ public class MainActivity extends ActionBarActivity {
         random = new Random();
         handler = new Handler();
         /*Fim teste*/
+        Log.d(TAG,"AFFF");
+        if(existeConexao(getBaseContext()) && !quizIniciado) {
+            Log.d(TAG,"Entrei");
+            resetQuiz();
+            quizIniciado = true;
+        }else{
+            Log.d(TAG,"OFF net");
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Falha na internet");
 
-        resetQuiz();
+            //Resultado do jogo
+            builder.setMessage("ATENÇÃO: Não foi detectado conexão com a Internet!");
+            builder.setCancelable(false);
+            builder.setPositiveButton("Tentar novamente", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent i = getBaseContext().getPackageManager()
+                            .getLaunchIntentForPackage( getBaseContext().getPackageName() );
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                }
+            });
+
+            AlertDialog resetDialog = builder.create();
+            resetDialog.show();
+        }
     }
 
 
@@ -86,60 +113,133 @@ public class MainActivity extends ActionBarActivity {
 
         new Thread() {
             public void run() {
-//                String url = "http://quizws.jelastic.websolute.net.br/quizws/service/getRandomQuiz/5";
-//                String url = "http://default-environment-jjppvgvpnp.elasticbeanstalk.com/service/getRandomQuiz"; //com objeto quiz : {}
-                //String url = "http://default-environment-jjppvgvpnp.elasticbeanstalk.com/service/getRandomQuiz/5"; //sem objeto quiz {}
-                String url = "http://default-environment-jjppvgvpnp.elasticbeanstalk.com/service/getRandomQuiz";
-                WebService ws = new WebService(url);
-                Map params = new HashMap();
-                String response = ws.webGet("", params);
-                // HttpResponse response = ws.response;
 
-                InputStream inputStream = null;
-                String result = null;
 
                 try {
-                    JSONArray jsonWS = new JSONArray(response);
+//                String url = "http://quizws.jelastic.websolute.net.br/quizws/service/getRandomQuiz/5";
+//                String url = "http://default-environment-jjppvgvpnp.elasticbeanstalk.com/service/getRandomQuiz"; //com objeto quiz : {}
+                    //String url = "http://default-environment-jjppvgvpnp.elasticbeanstalk.com/service/getRandomQuiz/5"; //sem objeto quiz {}
+                    String url = "http://default-environment-jjppvgvpnp.elasticbeanstalk.com/service/getRandomQuiz";
+                    WebService ws = new WebService(url);
+                    Map params = new HashMap();
+                    String response = ws.webGet("", params);
+                    // HttpResponse response = ws.response;
 
-                    for (int i = 0; i < jsonWS.length(); i++) {
-                        try {
-                            JSONObject objPerguntaWS = jsonWS.getJSONObject(i).getJSONObject("pergunta");
-                            Pergunta pergunta = new Pergunta();
+                    InputStream inputStream = null;
+                    String result = null;
 
-                            pergunta.setIdPergunta(objPerguntaWS.getInt("idPergunta"));
-                            pergunta.setPergunta(objPerguntaWS.getString("pergunta"));
-                            ArrayList<Resposta> respostas = new ArrayList<Resposta>();
+                    try {
+                        JSONArray jsonWS = new JSONArray(response);
 
-                            JSONArray arrayRespostas = objPerguntaWS.getJSONArray("respostas");
+                        for (int i = 0; i < jsonWS.length(); i++) {
+                            try {
+                                JSONObject objPerguntaWS = jsonWS.getJSONObject(i).getJSONObject("pergunta");
+                                Pergunta pergunta = new Pergunta();
 
-                            for (int j = 0; j < arrayRespostas.length(); j++) {
-                                JSONObject objRespostaWS = arrayRespostas.getJSONObject(j);
-                                respostas.add(new Resposta(objRespostaWS.getInt("idResposta"), objRespostaWS.getString("resposta"), objRespostaWS.getBoolean("respostaCerta")));
-                                Log.e(TAG, "obj RESPOSTA ID " + i + " = " + objRespostaWS.getInt("idResposta") + "// correto?" + objRespostaWS.getBoolean("respostaCerta"));
+                                pergunta.setIdPergunta(objPerguntaWS.getInt("idPergunta"));
+                                pergunta.setPergunta(objPerguntaWS.getString("pergunta"));
+                                ArrayList<Resposta> respostas = new ArrayList<Resposta>();
+
+                                JSONArray arrayRespostas = objPerguntaWS.getJSONArray("respostas");
+
+                                for (int j = 0; j < arrayRespostas.length(); j++) {
+                                    JSONObject objRespostaWS = arrayRespostas.getJSONObject(j);
+                                    respostas.add(new Resposta(objRespostaWS.getInt("idResposta"), objRespostaWS.getString("resposta"), objRespostaWS.getBoolean("respostaCerta")));
+                                    Log.d(TAG, "obj RESPOSTA ID " + i + " = " + objRespostaWS.getInt("idResposta") + "// correto?" + objRespostaWS.getBoolean("respostaCerta"));
+                                }
+
+                                pergunta.setRespostas(respostas);
+                                arrayPerguntas.add(pergunta);
+                                Log.d(TAG, "Pergunta do WS " + i + " = " + objPerguntaWS.getString("pergunta"));
+                            } catch (JSONException ex) {
+                                Log.d(TAG, "JSON ERRO ! " + ex);
                             }
-
-                            pergunta.setRespostas(respostas);
-                            arrayPerguntas.add(pergunta);
-                            Log.e(TAG, "Pergunta do WS " + i + " = " + objPerguntaWS.getString("pergunta"));
-                        } catch (JSONException ex) {
-                            Log.e(TAG, "JSON PAU ! " + ex);
                         }
+
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // This code will always run on the UI thread, therefore is safe to modify UI elements.
+                                iniciaQuiz();
+                            }
+                        });
+
+                        Log.e(TAG, "RESULTADO *** 27 **** = ");
+
+                    } catch (Exception ex) {
+                        Log.d(TAG, " GOOGLE JSON [** 32 ***]", ex);
+
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                builder.setTitle("WebService indisponível");
+
+                                //Resultado do jogo
+                                builder.setMessage("O WebService está indisponível neste momento. Por favor entre em contato conosco que iremos verificar o problema o mais rápido possível: \n Alvaro: (41) 9969-8029 \n Diullian: (41) 9641-9422 \n Diego: (41) 9804-8572");
+                                builder.setCancelable(false);
+
+                                builder.setNegativeButton("Sair", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish();
+                                        System.exit(0);
+                                    }
+                                });
+
+                                builder.setPositiveButton("Tentar novamente", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent i = getBaseContext().getPackageManager()
+                                                .getLaunchIntentForPackage(getBaseContext().getPackageName());
+                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(i);
+                                    }
+                                });
+
+                                AlertDialog resetDialog = builder.create();
+                                resetDialog.show();
+                            }
+                        });
                     }
 
-                    Log.e(TAG, "RESULTADO *** 27 **** = ");
+                }catch(Exception ex){
+                    Log.d(TAG,"WS desconectado");
 
-                } catch (Exception ex) {
-                    Log.e(TAG, " GOOGLE JSON [** 32 ***]", ex);
-                    // ex.printStackTrace();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                            builder.setTitle("WebService indisponível");
+
+                            //Resultado do jogo
+                            builder.setMessage("O WebService está indisponível neste momento. Por favor entre em contato conosco para verificar o problema: \n Alvaro Infante: (41) 9969-8029 \n Diullian: (41) 9641-9422 \n  Diego: (41) 9804-8572");
+                            builder.setCancelable(false);
+
+                            builder.setNegativeButton("Sair", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                    System.exit(0);
+                                }
+                            });
+
+                            builder.setPositiveButton("Tentar novamente", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent i = getBaseContext().getPackageManager()
+                                            .getLaunchIntentForPackage(getBaseContext().getPackageName());
+                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(i);
+                                }
+                            });
+
+                            AlertDialog resetDialog = builder.create();
+                            resetDialog.show();
+                        }
+                    });
                 }
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // This code will always run on the UI thread, therefore is safe to modify UI elements.
-                        iniciaQuiz();
-                    }
-                });
 
             }
         }.start();
@@ -205,17 +305,17 @@ public class MainActivity extends ActionBarActivity {
 
         boolean bolAcertou = perguntaAtual.respostas.get(respostaId).respostaCerta;
 
-        Log.e(TAG, "resposta ID = " + respostaId);
-        Log.e(TAG, "pergunta atual = " + perguntaAtual.idPergunta);
-        Log.e(TAG, "Acertei? " + bolAcertou);
+//        Log.e(TAG, "resposta ID = " + respostaId);
+//        Log.e(TAG, "pergunta atual = " + perguntaAtual.idPergunta);
+//        Log.e(TAG, "Acertei? " + bolAcertou);
 
         if (bolAcertou) {
-            respostaTextView.setText("Acertou! :D");
+            respostaTextView.setText("ACERTOU!");
             respostaTextView.setTextColor(getResources().getColor(R.color.correct_answer));
             // Acrescenta na nota final caso a resposta esteja correta.
             notaFinal += 20;
         } else {
-            respostaTextView.setText("Errou! :/");
+            respostaTextView.setText("ERROU!");
             respostaTextView.setTextColor(getResources().getColor(R.color.incorrect_answer));
         }
 
@@ -314,6 +414,36 @@ public class MainActivity extends ActionBarActivity {
         intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_HOME);
         startActivity(intent);
+    }
+
+    public boolean existeConexao(Context context) {
+
+        Context _context = context;
+        ConnectivityManager connectivity = (ConnectivityManager)
+                _context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo netInfo = connectivity.getActiveNetworkInfo();
+
+            // Se não existe nenhum tipo de conexão retorna false
+            if (netInfo == null) {
+                return false;
+            }
+
+            int netType = netInfo.getType();
+            // Verifica se a conexão é do tipo WiFi ou Mobile e
+            // retorna true se estiver conectado ou false em
+            // caso contrário
+            if (netType == ConnectivityManager.TYPE_WIFI ||
+                    netType == ConnectivityManager.TYPE_MOBILE) {
+                return netInfo.isConnected();
+
+            } else {
+                return false;
+            }
+
+        } else {
+            return false;
+        }
     }
 
 }
