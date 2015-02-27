@@ -52,7 +52,7 @@ public class SQLController {
         //String[] allColumns = new String[]{BancoDados.MEMBER_NAME, BancoDados.MEMBER_SCORE};
 
         //Cursor c = database.query(BancoDados.TABLE_MEMBER, allColumns, null, null, null, null, "score DESC");
-        Cursor c = database.rawQuery("SELECT '#' || ROWID, name, score_date, score FROM (SELECT name, score_date, score from players_score order by score desc) order by rowid", null);
+        Cursor c = database.rawQuery("SELECT name, score_date, score from players_score order by score desc", null);
 
         if (c != null) {
             c.moveToFirst();

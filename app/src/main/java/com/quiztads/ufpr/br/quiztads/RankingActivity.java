@@ -83,12 +83,6 @@ public class RankingActivity extends ActionBarActivity {
 
                 tv.setText(c.getString(j));
 
-                if (c.getString(j).equalsIgnoreCase(name)) {
-                    Log.e(TAG, name);
-                    Log.e(TAG, c.getString(j));
-                    row.setBackgroundColor(Color.YELLOW);
-                }
-
                 row.addView(tv);
 
             }
