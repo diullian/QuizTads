@@ -76,13 +76,11 @@ public class MainActivity extends ActionBarActivity {
         random = new Random();
         handler = new Handler();
         /*Fim teste*/
-        Log.d(TAG,"AFFF");
+
         if(existeConexao(getBaseContext()) && !quizIniciado) {
-            Log.d(TAG,"Entrei");
             resetQuiz();
             quizIniciado = true;
         }else{
-            Log.d(TAG,"OFF net");
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Falha na internet");
 
@@ -145,12 +143,12 @@ public class MainActivity extends ActionBarActivity {
                                 for (int j = 0; j < arrayRespostas.length(); j++) {
                                     JSONObject objRespostaWS = arrayRespostas.getJSONObject(j);
                                     respostas.add(new Resposta(objRespostaWS.getInt("idResposta"), objRespostaWS.getString("resposta"), objRespostaWS.getBoolean("respostaCerta")));
-                                    Log.d(TAG, "obj RESPOSTA ID " + i + " = " + objRespostaWS.getInt("idResposta") + "// correto?" + objRespostaWS.getBoolean("respostaCerta"));
+                                    //Log.d(TAG, "obj RESPOSTA ID " + i + " = " + objRespostaWS.getInt("idResposta") + "// correto?" + objRespostaWS.getBoolean("respostaCerta"));
                                 }
 
                                 pergunta.setRespostas(respostas);
                                 arrayPerguntas.add(pergunta);
-                                Log.d(TAG, "Pergunta do WS " + i + " = " + objPerguntaWS.getString("pergunta"));
+                                //Log.d(TAG, "Pergunta do WS " + i + " = " + objPerguntaWS.getString("pergunta"));
                             } catch (JSONException ex) {
                                 Log.d(TAG, "JSON ERRO ! " + ex);
                             }
@@ -165,10 +163,9 @@ public class MainActivity extends ActionBarActivity {
                             }
                         });
 
-                        Log.e(TAG, "RESULTADO *** 27 **** = ");
+                        //Log.e(TAG, "RESULTADO *** 27 **** = ");
 
                     } catch (Exception ex) {
-                        Log.d(TAG, " GOOGLE JSON [** 32 ***]", ex);
 
                         handler.post(new Runnable() {
                             @Override
@@ -214,7 +211,7 @@ public class MainActivity extends ActionBarActivity {
                             builder.setTitle("WebService indisponível");
 
                             //Resultado do jogo
-                            builder.setMessage("O WebService está indisponível neste momento. Por favor entre em contato conosco para verificar o problema: \n Alvaro Infante: (41) 9969-8029 \n Diullian: (41) 9641-9422 \n  Diego: (41) 9804-8572");
+                            builder.setMessage("O WebService está indisponível neste momento. Por favor entre em contato conosco que iremos verificar imediatamente o problema: \n Alvaro Infante: (41) 9969-8029 \n Diullian: (41) 9641-9422 \n  Diego: (41) 9804-8572");
                             builder.setCancelable(false);
 
                             builder.setNegativeButton("Sair", new DialogInterface.OnClickListener() {
@@ -255,7 +252,7 @@ public class MainActivity extends ActionBarActivity {
         );
 
         Pergunta objPergunta = arrayPerguntas.get(intPerguntaAtual - 1);
-        Log.e(TAG, "intPerguntaAtual == " + intPerguntaAtual);
+        //Log.e(TAG, "intPerguntaAtual == " + intPerguntaAtual);
 
         perguntaTextView.setText(objPergunta.pergunta); //Adiciona na UI a pergunta dinâmica
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -298,7 +295,7 @@ public class MainActivity extends ActionBarActivity {
         tentativas++;
         disableButtons(); //Desabilita outros botões de resposta
 
-        Log.e(TAG, " select resposta = tentativa " + tentativas + " // totalMax = " + totalMaxPergunta);
+        //Log.e(TAG, " select resposta = tentativa " + tentativas + " // totalMax = " + totalMaxPergunta);
 
         Pergunta perguntaAtual = arrayPerguntas.get(intPerguntaAtual - 1);
         int respostaId = respostaButton.getId();
@@ -329,9 +326,9 @@ public class MainActivity extends ActionBarActivity {
             relatorio.add(new Relatorio("Nota Final", String.valueOf(notaFinal)));
             //hmRelatorio.put("Nota Final", String.valueOf(notaFinal));
 
-            for (Relatorio rel : relatorio) {
-                Log.e(TAG, rel.getParam() + rel.getValue());
-            }
+            //for (Relatorio rel : relatorio) {
+                //Log.e(TAG, rel.getParam() + rel.getValue());
+            //}
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("PARABÉNS!");
@@ -405,15 +402,30 @@ public class MainActivity extends ActionBarActivity {
         return (TableRow) buttonTableLayout.getChildAt(row);
     }
 
-    @Override
     /**
-     * Desabilita botão volta, para não retornar as activities anteriores.
+     * Caso aperte o botao voltar, confirma se quer sair do aplicativo
      */
+    @Override
     public void onBackPressed() {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_HOME);
-        startActivity(intent);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Deseja realmente sair do Quiz?")
+                .setCancelable(false)
+                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        MainActivity.this.finish();
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_MAIN);
+                        intent.addCategory(Intent.CATEGORY_HOME);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     public boolean existeConexao(Context context) {
